@@ -1,54 +1,43 @@
 import { prisma } from "../prisma/prisma.js";
 
 const UserRegister = async (req, res) => {
-    try {
-        const { name, email, gender, age } = req.body; // Include gender and age
+  try {
+      const { name, email, gender, age } = req.body; // Include gender and age
 
-        // Create the user in the database
-        const user = await prisma.user.create({
-            data: {
-                name,
-                email,
-                gender,
-                age,
-            },
-        });
+      // Check if the user already exists by email
+      let user = await prisma.user.findUnique({
+          where: {
+              email,
+          },
+      });
 
-        // If the user creation fails, handle the error
-        if (!user) {
-            return res.status(400).json({ message: "Server busy, can't register you" });
-        }
+      if (user) {
+          // User exists, return their information
+          return res.status(200).json({
+              userId: user.id,
+              message: "User already registered",
+          });
+      }
 
-        // Respond with success
-        return res.status(201).json({ userId: user.id, message: "Registered Successfully" });
-    } catch (error) {
-        console.error('Error during user registration:', error);
-        return res.status(500).json({ message: "Error in registration process" });
-    }
-};
+      // Create the user in the database if not found
+      user = await prisma.user.create({
+          data: {
+              name,
+              email,
+              gender,
+              age,
+          },
+      });
 
-const UserLogin = async (req, res) => {
-    try {
-        const { name, email } = req.body; // Login will only use name and email
-
-        // Find the user by email and name
-        const user = await prisma.user.findUnique({
-            where: {
-                email,
-            },
-        });
-
-        // If user not found, return an error
-        if (!user || user.name !== name) {
-            return res.status(404).json({ message: "User not found or name does not match" });
-        }
-
-        // Return only the userId on successful login
-        return res.status(200).json({ userId: user.id, message: "Login successful" });
-    } catch (error) {
-        console.error('Error during user login:', error);
-        return res.status(500).json({ message: "Internal server error" });
-    }
+      // Respond with success for new user registration
+      return res.status(201).json({
+          userId: user.id,
+          message: "Registered Successfully",
+      });
+  } catch (error) {
+      console.error('Error during user registration/login:', error);
+      return res.status(500).json({ message: "Error in registration/login process" });
+  }
 };
 
 //TODO!! Need to change the structure so that Spin left is also stored

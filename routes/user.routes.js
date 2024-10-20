@@ -11,7 +11,6 @@ const router = express.Router()
 
 
 router.route("/register").post(UserRegister)
-router.route("/login").post(UserLogin)
 router.route("/updatePoints/:id").post(updateUserPoints)
 router.route("/getForm/:adminId").get(getForms)
 router.route("/mark/:userId").post(markOption)
