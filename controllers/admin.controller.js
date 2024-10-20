@@ -6,16 +6,19 @@ import bcrypt from 'bcrypt';
 
 // Function to create an admin
 const registerAdmin = async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password , secretKey } = req.body;
 
     try {
-
+        if(secretKey!=process.env.SECRET_KEY){
+          console.log("Wrong key")
+          return res.status(400).json({message:"wrong secretKey"})
+        }
         const existingAdmin = await prisma.admin.findUnique({
             where: { username },
         });
 
         if (existingAdmin) {
-            return res.status(400).json({ message: 'Username already taken' });
+            return res.status(200).json(existingAdmin)
         }
 
 

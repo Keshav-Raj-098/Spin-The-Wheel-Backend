@@ -51,11 +51,11 @@ const UserLogin = async (req, res) => {
     }
 };
 
-
+//TODO!! Need to change the structure so that Spin left is also stored
 // Update Points
 const updateUserPoints = async (req, res) => {
     const { id } = req.params; // Get user ID from the request parameters
-    const { points } = req.body; // Get new points value from the request body
+    const { career_points,spin_left } = req.body; // Get new points value from the request body
 
     try {
         // Fetch the current user data
