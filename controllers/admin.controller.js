@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 
 // Function to create an admin
 const registerAdmin = async (req, res) => {
-    const { username, password , secretKey } = req.body;
+    const { username, password , secretKey } = req.body; // changed to keep a secret key
 
     try {
         if(secretKey!=process.env.SECRET_KEY){

@@ -82,6 +82,38 @@ const updateUserPoints = async (req, res) => {
     }
 };
 
+//TODO!! Need a spin left variable and return it
+const getUserPoints = async (req, res) => {
+  const { id } = req.params; // Get user ID from the request parameters
+   // Get new points value from the request body
+
+  try {
+      // Fetch the current user data
+      const user = await prisma.user.findUnique({
+          where: { id },
+          select: { points: true }, // Select only the points field
+      });
+
+      if (!user) {
+          return res.status(404).json({
+              message: 'User not found',
+          });
+      }
+
+      // Need to change structure so that it can say how much spin left
+      return res.status(200).json({
+          message: 'User points updated successfully',
+          user: user,    
+      });
+  } catch (error) {
+      console.error('Error updating user points:', error);
+      return res.status(500).json({
+          message: 'Error updating user points',
+          error: error.message,
+      });
+  }
+};
+
 // markoption
 const markOption = async (req, res) => {
   const { userId } = req.params;
@@ -200,6 +232,16 @@ const getForms = async (req, res) => {
     }
 }
   
-  
-  
-export { UserRegister, UserLogin,updateUserPoints,getForms,markOption }
+const uncompletedForms = async(req,res)=>{
+  const {userId}=req.params
+
+  // find in forms filled and send me the indexes of the form which are left
+}
+
+const formCompleted = async(req,res)=>{
+  const {userId}=req.params
+  const  {form_no}=req.body
+
+  // update in forms filled and send me the indexes of the form which are left
+}
+export { UserRegister, UserLogin,updateUserPoints,getForms,markOption,getUserPoints,uncompletedForms,formCompleted }
